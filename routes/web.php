@@ -21,3 +21,11 @@ Route::prefix('car/{carId}')->group(function () {
         Route::get('/delete', [PartController::class, 'delete']);
     });
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

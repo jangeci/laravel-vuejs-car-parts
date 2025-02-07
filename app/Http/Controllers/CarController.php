@@ -11,9 +11,9 @@ class CarController extends Controller
 
     public function detail(Request $request, $carId)
     {
-        $car = Car::find($carId)->first();
+        $car = Car::findOrFail($carId)->first();
 
-        $query = Part::query();
+        $query = Part::where('car_id', $carId);
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
             $query->where('name', 'LIKE', '%' . $search . '%')->orwhere('serial_number', 'LIKE', '%' . $search . '%');
@@ -71,7 +71,7 @@ class CarController extends Controller
             'registration_number' => 'required_if:is_registered,1',
         ]);
 
-        Car::find($carId)->update([
+        Car::findOrFail($carId)->update([
             'name' => $request['name'],
             'registration_number' => $request['registration_number'],
             'is_registered' => $request['is_registered'],
@@ -82,7 +82,7 @@ class CarController extends Controller
 
     public function delete($carId)
     {
-        Car::find($carId)->delete();
+        Car::findOrFail($carId)->delete();
         return Redirect()->back()->with('success', 'Car deleted successfully');
     }
 }

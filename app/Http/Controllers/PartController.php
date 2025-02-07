@@ -42,7 +42,7 @@ class PartController extends Controller
             'car_id' => 'required',
         ]);
 
-        Part::find($partId)->update([
+        Part::findOrFail($partId)->update([
             'name' => $request['name'],
             'car_id' => $request['car_id'],
             'serial_number' => $request['serial_number'],
@@ -58,7 +58,7 @@ class PartController extends Controller
 
     public function delete($partId)
     {
-        Part::find($partId)->delete();
+        Part::findOrFail($partId)->delete();
         return Redirect()->back()->with('success', 'Part deleted successfully');
     }
 }
