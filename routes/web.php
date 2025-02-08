@@ -5,10 +5,10 @@ use App\Http\Controllers\PartController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [CarController::class, 'index']);
+Route::post('/create', [CarController::class, 'create'])->name('car.create');
 
 Route::prefix('car/{carId}')->group(function () {
     Route::get('/', [CarController::class, 'detail']);
-    Route::get('/new', [CarController::class, 'new']);
     Route::get('/edit', [CarController::class, 'edit']);
     Route::post('/create', [CarController::class, 'create']);
     Route::post('/update', [CarController::class, 'update']);

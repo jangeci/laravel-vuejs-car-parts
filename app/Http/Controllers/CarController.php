@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use App\Models\Part;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CarController extends Controller
@@ -42,12 +43,15 @@ class CarController extends Controller
         $request->validate([
             'name' => 'required',
             'registration_number' => 'required_if:is_registered,1',
+        ], [
+            'registration_number.required_if' => 'Registration number is required'
         ]);
 
         Car::insert([
             'name' => $request['name'],
             'registration_number' => $request['registration_number'],
-            'is_registered' => $request['is_registered'],
+            'is_registered' => $request['is_registered'] ?? 0,
+            'created_at' => Carbon::now()
         ]);
 
         $notification = array(

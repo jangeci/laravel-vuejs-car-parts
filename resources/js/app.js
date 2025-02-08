@@ -5,7 +5,11 @@
  */
 
 import './bootstrap';
-import { createApp } from 'vue';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap-icons/font/bootstrap-icons.css";
+import 'bootstrap';
+
+import {createApp} from 'vue';
 
 /**
  * Next, we will create a fresh Vue application instance. You may then begin
@@ -16,6 +20,9 @@ import { createApp } from 'vue';
 const app = createApp({});
 
 import ExampleComponent from './components/ExampleComponent.vue';
+import CarsList from "./components/car/CarsList.vue";
+
+app.component('cars-list', CarsList);
 app.component('example-component', ExampleComponent);
 
 /**
