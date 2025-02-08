@@ -18,19 +18,11 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Cars app') }}
-                </a>
-            </div>
-        </nav>
-
-        <main class="py-4">
-            <div id="app">
-                @yield('content')
-            </div>
-        </main>
+{{--        <main class="py-4">--}}
+{{--            <div id="app">--}}
+{{--                @yield('content')--}}
+{{--            </div>--}}
+{{--        </main>--}}
     </div>
 </body>
 </html>

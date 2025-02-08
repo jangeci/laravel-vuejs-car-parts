@@ -9,21 +9,6 @@ use Illuminate\Http\Request;
 
 class CarController extends Controller
 {
-
-    public function detail(Request $request, $carId)
-    {
-        $car = Car::findOrFail($carId)->first();
-
-        $query = Part::where('car_id', $carId);
-        if ($request->has('search') && !empty($request->search)) {
-            $search = $request->search;
-            $query->where('name', 'LIKE', '%' . $search . '%')->orwhere('serial_number', 'LIKE', '%' . $search . '%');
-        }
-        $parts = $query->latest()->paginate(10);
-
-        return view('car.detail', compact('car', 'parts'));
-    }
-
     public function index(Request $request)
     {
         $query = Car::query();
@@ -33,9 +18,40 @@ class CarController extends Controller
             $query->where('name', 'LIKE', '%' . $search . '%')->orwhere('registration_number', 'LIKE', '%' . $search . '%');
         }
 
-        $cars = $query->latest()->paginate(10);
+        $cars = $query->latest()->paginate(5);
 
-        return view('home', compact('cars'));
+        return response()->json([
+            'code' => 200,
+            'msg' => 'Cars list',
+            'data' => $cars]);
+    }
+
+    public function detail($carId)
+    {
+        $car = Car::findOrFail($carId);
+        return response()->json([
+                'code' => 200,
+                'msg' => 'Car detail',
+                'data' => $car
+            ]
+        );
+    }
+
+    public function carParts(Request $request, $carId)
+    {
+        $query = Part::where('car_id', $carId);
+
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where('name', 'LIKE', '%' . $search . '%')->orwhere('serial_number', 'LIKE', '%' . $search . '%');
+        }
+        $parts = $query->latest();
+
+        return response()->json([
+            'code' => 200,
+            'msg' => 'Cars list',
+            'data' => $parts
+        ]);
     }
 
     public function create(Request $request)
@@ -54,18 +70,11 @@ class CarController extends Controller
             'created_at' => Carbon::now()
         ]);
 
-        $notification = array(
-            'message' => 'Car created successfully',
-            'alert-type' => 'success',
-        );
-
-        return Redirect()->back()->with($notification);
-    }
-
-    public function edit($carId)
-    {
-        $car = DB::table('cars')->where('id', $carId)->first();
-        return view('car-edit', compact('car'));
+        return response()->json([
+            'code' => 200,
+            'msg' => 'Car created successfully',
+            'data' => null
+        ]);
     }
 
     public function update(Request $request, $carId)
@@ -81,12 +90,18 @@ class CarController extends Controller
             'is_registered' => $request['is_registered'],
         ]);
 
-        return Redirect()->back()->with('success', 'Car updated successfully');
+        return response()->json([
+            'code' => 200,
+            'msg' => 'Car updated successfully',
+        ]);
     }
 
     public function delete($carId)
     {
         Car::findOrFail($carId)->delete();
-        return Redirect()->back()->with('success', 'Car deleted successfully');
+        return response()->json([
+            'code' => 200,
+            'msg' => 'Car deleted successfully',
+        ]);
     }
 }

@@ -17,13 +17,22 @@ import {createApp} from 'vue';
  * to use in your application's views. An example is included for you.
  */
 
-const app = createApp({});
+axios.defaults.baseURL = "http://localhost/api";
 
-import ExampleComponent from './components/ExampleComponent.vue';
-import CarsList from "./components/car/CarsList.vue";
+const app = createApp(App);
 
+import App from "./App.vue";
+import router from "./core/AppRouter.js";
+import CarsList from "./features/car/components/CarsList.vue";
+import PartsList from "./features/car/components/PartsList.vue";
+import ConfirmationModal from "./components/ConfirmationModal.vue";
+import AppHeader from "./components/AppHeader.vue";
+import appToast from "./core/AppToast.js";
+
+app.component('app-header', AppHeader);
 app.component('cars-list', CarsList);
-app.component('example-component', ExampleComponent);
+app.component('parts-list', PartsList);
+app.component('confirmation-modal', ConfirmationModal);
 
 /**
  * The following block of code may be used to automatically register your
@@ -42,5 +51,6 @@ app.component('example-component', ExampleComponent);
  * an "id" attribute of "app". This element is included with the "auth"
  * scaffolding. Otherwise, you will need to add an element yourself.
  */
-
+app.use(router);
+app.use(appToast);
 app.mount('#app');
