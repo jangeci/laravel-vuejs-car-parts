@@ -40,7 +40,7 @@ const fetchParts = async (url = `/cars/${carId}/parts`) => {
                 search: searchQuery.value,
             }
         });
-        parts.value = response.data.data.data;
+        parts.value = response.data.data;
     } catch (error) {
         console.error("Error fetching parts:", error);
     }
@@ -85,7 +85,40 @@ const updateCar = async (event) => {
         console.error("Error updating car:", error);
     }
 };
-//TODO add part
+const addCarPart = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const name = formData.get("name");
+    const serial_number = formData.get("serial_number");
+
+    const errors = {};
+    if (!name) {
+        errors.name = "Part name is required.";
+    }
+    if (!serial_number) {
+        errors.serial_number = "Serial number is required.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+        addPartError.value = errors;
+        return;
+    }
+
+    try {
+        await axios.post(`cars/${carId}/add-part`, {name: name, serial_number: serial_number});
+        toast("Car part added!", "success");
+        fetchParts();
+        addPartError.value = '';
+    } catch (error) {
+        if (error.response && error.response.status === 422) {
+            updateCarError.value = error.response.data.errors;
+        } else {
+            updateCarError.value = error.message;
+        }
+        console.error("Error creating car part:", error);
+    }
+};
 
 </script>
 
@@ -182,13 +215,11 @@ const updateCar = async (event) => {
                         Add new part
                     </div>
                     <div class="card-body">
-                        <form @submit="addPart">
-                            <input type="hidden" name="is_registered" value="0">
-
+                        <form @submit="addCarPart">
                             <div class="form-group pb-3">
-                                <label class="form-label" for="name"></label>
-                                Car name
+                                <label class="form-label" for="part-name">Part name</label>
                                 <input
+                                    id="part-name"
                                     class="form-control"
                                     name="name"
                                     type="text"
@@ -200,32 +231,22 @@ const updateCar = async (event) => {
                                 </div>
                             </div>
 
-                            <div class="form-group pb-3 d-flex">
-                                <input
-                                    class="form-check-input me-2"
-                                    name="is_registered"
-                                    type="checkbox"
-                                    id="is_registered"
-                                    value="1"
-                                >
-                                <label class="form-label" for="is_registered">Is registered</label>
-                            </div>
-
                             <div class="form-group pb-3">
-                                <label class="form-label col-12">
-                                    Registration number
-                                    <input
-                                        class="form-control"
-                                        name="registration_number"
-                                        type="text"
-                                        :class="{'is-invalid': addPartError.registration_number}"
-                                    >
+                                <label class="form-label col-12" for="serial-number">
+                                    Serial number
                                 </label>
+                                <input
+                                    id="serial-number"
+                                    class="form-control"
+                                    name="serial_number"
+                                    type="text"
+                                    :class="{'is-invalid': addPartError.serial_number}"
+                                >
+                                <div v-if="addPartError.serial_number" class="invalid-feedback">
+                                    {{ addPartError.serial_number }}
+                                </div>
                             </div>
 
-                            <div v-if="addPartError.registration_number" class="form-group pb-3">
-                                <p class="alert-danger">{{ addPartError.registration_number }}</p>
-                            </div>
 
                             <button type="submit" class="btn btn-primary">Add Car Part</button>
                         </form>

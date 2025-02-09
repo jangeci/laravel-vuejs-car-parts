@@ -1,8 +1,8 @@
 import CarsMainPage from "../features/car/pages/CarsMainPage.vue";
 import {createRouter, createWebHistory} from "vue-router";
 import CarDetailPage from "../features/car/pages/CarDetailPage.vue";
-import CarEditPage from "../features/car/pages/CarEditPage.vue";
 import NotFoundPage from "../features/NotFoundPage.vue";
+import PartEditPage from "../features/part/pages/PartEditPage.vue";
 
 const routes = [
     {
@@ -16,14 +16,9 @@ const routes = [
         component: CarDetailPage
     },
     {
-        path: '/cars/:id/edit',
-        name: 'CarEdit',
-        component: CarEditPage
-    },
-    {
-        path: '/cars/:carId/part/:partId/edit',
+        path: '/cars/:carId/parts/:partId/edit',
         name: 'CarPartEdit',
-        component: CarEditPage
+        component: PartEditPage
     },
     {
         path: "/:pathMatch(.*)*",

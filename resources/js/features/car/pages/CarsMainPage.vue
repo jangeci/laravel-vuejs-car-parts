@@ -159,8 +159,8 @@ const addCar = async (event) => {
                                 >
                             </div>
 
-                            <div v-if="addCarError.registration_number" class="form-group pb-3">
-                                <p class="alert-danger">{{ addCarError.registration_number }}</p>
+                            <div v-if="addCarError.registration_number" class="form-group pb-3 invalid-feedback">
+                                {{ addCarError.registration_number }}
                             </div>
 
                             <button type="submit" class="btn btn-primary">Add Car</button>

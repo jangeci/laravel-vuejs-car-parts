@@ -3,29 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Part;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PartController extends Controller
 {
-    public function create(Request $request)
+    public function create(Request $request, $carId)
     {
         $request->validate([
             'name' => 'required',
-            'car_id' => 'required',
+            'serial_number' => 'required',
         ]);
 
         Part::insert([
             'name' => $request['name'],
-            'car_id' => $request['car_id'],
+            'car_id' => $carId,
             'serial_number' => $request['serial_number'],
+            'created_at' => Carbon::now()
         ]);
 
-        $notification = array(
-            'message' => 'Part created successfully',
-            'alert-type' => 'success',
-        );
-
-        return Redirect()->back()->with($notification);
+        return response()->json([
+            'code' => 200,
+            'msg' => 'Part created successfully',
+        ]);
     }
 
     public function edit($partId)
@@ -56,9 +56,12 @@ class PartController extends Controller
         return Redirect()->back()->with($notification);
     }
 
-    public function delete($partId)
+    public function delete($carId, $partId)
     {
         Part::findOrFail($partId)->delete();
-        return Redirect()->back()->with('success', 'Part deleted successfully');
+        return response()->json([
+            'code' => 200,
+            'msg' => 'Part deleted successfully',
+        ]);
     }
 }

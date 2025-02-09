@@ -1,5 +1,5 @@
 <script setup>
-import {defineProps, ref} from 'vue';
+import {defineProps, inject, ref} from 'vue';
 import ConfirmationModal from "../../../components/ConfirmationModal.vue";
 
 const props = defineProps({
@@ -9,6 +9,7 @@ const props = defineProps({
 
 const showModal = ref(false);
 const carIdToDelete = ref(null);
+const toast = inject("toast");
 
 const openModal = (carId) => {
     carIdToDelete.value = carId;
@@ -20,12 +21,12 @@ const closeModal = () => {
 };
 
 const handleDelete = async () => {
-    console.log(carIdToDelete)
 
     try {
         await axios.delete(`/cars/${carIdToDelete.value}/delete`);
         props.fetchCars();
         closeModal();
+        toast("Car deleted!", "success");
     } catch (error) {
         console.error('Error deleting car:', error);
     }

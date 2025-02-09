@@ -23,7 +23,8 @@ class CarController extends Controller
         return response()->json([
             'code' => 200,
             'msg' => 'Cars list',
-            'data' => $cars]);
+            'data' => $cars
+        ]);
     }
 
     public function detail($carId)
@@ -45,7 +46,7 @@ class CarController extends Controller
             $search = $request->search;
             $query->where('name', 'LIKE', '%' . $search . '%')->orwhere('serial_number', 'LIKE', '%' . $search . '%');
         }
-        $parts = $query->latest();
+        $parts = $query->latest()->get();
 
         return response()->json([
             'code' => 200,
@@ -99,6 +100,7 @@ class CarController extends Controller
     public function delete($carId)
     {
         Car::findOrFail($carId)->delete();
+        Part::where('car_id', $carId)->delete();
         return response()->json([
             'code' => 200,
             'msg' => 'Car deleted successfully',
