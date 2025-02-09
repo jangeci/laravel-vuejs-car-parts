@@ -1,5 +1,5 @@
 <script setup>
-import {inject, onMounted, ref} from 'vue';
+import {computed, inject, onMounted, ref} from 'vue';
 import axios from 'axios';
 
 const toast = inject("toast");
@@ -8,6 +8,7 @@ const cars = ref([]);
 const searchQuery = ref('');
 const paginationLinks = ref([]);
 const addCarError = ref('');
+const isRegistered = ref(false);
 
 const fetchCars = async (url = '/cars') => {
     try {
@@ -31,7 +32,7 @@ const addCar = async (event) => {
     const formData = new FormData(event.target);
     const name = formData.get("name");
     const registration_number = formData.get("registration_number");
-    const is_registered = formData.get("is_registered") || 0;
+    const is_registered = isRegistered.value ? 1 : 0;
 
     const errors = {};
     if (!name) {
@@ -139,7 +140,8 @@ const addCar = async (event) => {
                                     name="is_registered"
                                     type="checkbox"
                                     id="is_registered"
-                                    value="1"
+                                    v-model="isRegistered"
+                                    :checked="isRegistered"
                                 >
                                 <label class="form-label" for="is_registered">
                                     Is registered

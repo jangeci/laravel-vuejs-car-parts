@@ -33,9 +33,9 @@ const fetchCarDetail = async () => {
         console.error("Error fetching car:", error);
     }
 };
-const fetchParts = async (url = `/cars/${carId}/parts`) => {
+const fetchParts = async () => {
     try {
-        const response = await axios.get(url, {
+        const response = await axios.get(`/cars/${carId}/parts`, {
             params: {
                 search: searchQuery.value,
             }
@@ -58,7 +58,6 @@ const updateCar = async (event) => {
     const name = formData.get("name");
     const registration_number = formData.get("registration_number");
     const is_registered = formData.get("is_registered") ? 1 : 0;
-
     const errors = {};
     if (!name) {
         errors.name = "Car name is required.";

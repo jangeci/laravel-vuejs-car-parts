@@ -21,7 +21,6 @@ const closeModal = () => {
 };
 
 const handleDelete = async () => {
-
     try {
         await axios.delete(`/cars/${carIdToDelete.value}/delete`);
         props.fetchCars();

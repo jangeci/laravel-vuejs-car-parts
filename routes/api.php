@@ -16,6 +16,7 @@ Route::prefix('/cars/{carId}')->group(function () {
     Route::delete('/delete', [CarController::class, 'delete']);
     Route::post('/add-part', [PartController::class, 'create']);
     Route::prefix('parts/{partId}')->group(function () {
+        Route::get('/', [PartController::class, 'detail']);
         Route::post('/update', [PartController::class, 'update']);
         Route::delete('/delete', [PartController::class, 'delete']);
     });

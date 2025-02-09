@@ -8,6 +8,17 @@ use Illuminate\Http\Request;
 
 class PartController extends Controller
 {
+    public function detail($carId, $partId)
+    {
+        $part = Part::findOrFail($partId);
+        return response()->json([
+                'code' => 200,
+                'msg' => 'Part detail',
+                'data' => $part
+            ]
+        );
+    }
+
     public function create(Request $request, $carId)
     {
         $request->validate([
@@ -28,32 +39,21 @@ class PartController extends Controller
         ]);
     }
 
-    public function edit($partId)
-    {
-        $part = DB::table('parts')->where('id', $partId)->first();
-
-        return view('part.edit', compact('part'));
-    }
-
-    public function update(Request $request, $partId)
+    public function update(Request $request, $carId, $partId)
     {
         $request->validate([
             'name' => 'required',
-            'car_id' => 'required',
         ]);
 
         Part::findOrFail($partId)->update([
             'name' => $request['name'],
-            'car_id' => $request['car_id'],
             'serial_number' => $request['serial_number'],
         ]);
 
-        $notification = array(
-            'message' => 'Part created successfully',
-            'alert-type' => 'success',
-        );
-
-        return Redirect()->back()->with($notification);
+        return response()->json([
+            'code' => 200,
+            'msg' => 'Part deleted successfully',
+        ]);
     }
 
     public function delete($carId, $partId)
