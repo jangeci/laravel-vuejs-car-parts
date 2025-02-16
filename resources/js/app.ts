@@ -23,13 +23,16 @@ const app = createApp(App);
 
 import App from "./App.vue";
 import router from "./core/AppRouter.js";
-import CarsList from "./features/car/components/CarsList.vue";
-import PartsList from "./features/car/components/PartsList.vue";
-import ConfirmationModal from "./components/ConfirmationModal.vue";
-import AppHeader from "./components/AppHeader.vue";
+import CarsList from "./presentation/features/car/components/CarsList.vue";
+import PartsList from "./presentation/features/car/components/PartsList.vue";
+import ConfirmationModal from "./presentation/components/ConfirmationModal.vue";
+import AppHeader from "./presentation/components/AppHeader.vue";
 import appToast from "./core/AppToast.js";
+import axios from "axios";
+import Pagination from "@/presentation/components/Pagination.vue";
 
 app.component('app-header', AppHeader);
+app.component('pagination', Pagination);
 app.component('cars-list', CarsList);
 app.component('parts-list', PartsList);
 app.component('confirmation-modal', ConfirmationModal);

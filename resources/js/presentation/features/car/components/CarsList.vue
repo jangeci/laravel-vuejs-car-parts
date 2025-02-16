@@ -1,17 +1,28 @@
-<script setup>
-import {defineProps, inject, ref} from 'vue';
+<script setup lang="ts">
+import {inject, ref} from 'vue';
 import ConfirmationModal from "../../../components/ConfirmationModal.vue";
+import {Car} from "@/domain/models/Car.js";
+import {CarRepository} from "@/data/repository/CarRepository";
 
 const props = defineProps({
-    cars: Array,
-    fetchCars: Function,
+    cars: Array<Car>,
+    fetchCars: {
+        type: Function,
+        required: true
+    },
 });
 
 const showModal = ref(false);
-const carIdToDelete = ref(null);
-const toast = inject("toast");
+const carIdToDelete = ref<number | null>(null);
+const toast = inject<(message: string, type?: string) => void>("toast");
 
-const openModal = (carId) => {
+if (!toast) {
+    throw new Error("Toast function is not provided");
+}
+
+const carRepository = new CarRepository();
+
+const openModal = (carId: number) => {
     carIdToDelete.value = carId;
     showModal.value = true;
 };
@@ -22,7 +33,7 @@ const closeModal = () => {
 
 const handleDelete = async () => {
     try {
-        await axios.delete(`/cars/${carIdToDelete.value}/delete`);
+        await carRepository.deleteCar(carIdToDelete.value!);
         props.fetchCars();
         closeModal();
         toast("Car deleted!", "success");
@@ -30,6 +41,7 @@ const handleDelete = async () => {
         console.error('Error deleting car:', error);
     }
 };
+
 </script>
 
 <template>

@@ -38,23 +38,6 @@ class CarController extends Controller
         );
     }
 
-    public function carParts(Request $request, $carId)
-    {
-        $query = Part::where('car_id', $carId);
-
-        if ($request->has('search') && !empty($request->search)) {
-            $search = $request->search;
-            $query->where('name', 'LIKE', '%' . $search . '%')->orwhere('serial_number', 'LIKE', '%' . $search . '%');
-        }
-        $parts = $query->latest()->get();
-
-        return response()->json([
-            'code' => 200,
-            'msg' => 'Cars list',
-            'data' => $parts
-        ]);
-    }
-
     public function create(Request $request)
     {
         $request->validate([

@@ -1,5 +1,5 @@
 <script setup>
-import {defineProps, inject, ref} from "vue";
+import {inject, ref} from "vue";
 import ConfirmationModal from "../../../components/ConfirmationModal.vue";
 import {useRoute} from "vue-router";
 

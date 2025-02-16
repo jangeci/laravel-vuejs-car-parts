@@ -1,8 +1,8 @@
-import CarsMainPage from "../features/car/pages/CarsMainPage.vue";
+import CarsMainPage from "../presentation/features/car/pages/CarsMainPage.vue";
 import {createRouter, createWebHistory} from "vue-router";
-import CarDetailPage from "../features/car/pages/CarDetailPage.vue";
-import NotFoundPage from "../features/NotFoundPage.vue";
-import PartEditPage from "../features/part/pages/PartEditPage.vue";
+import CarDetailPage from "../presentation/features/car/pages/CarDetailPage.vue";
+import NotFoundPage from "../presentation/NotFoundPage.vue";
+import PartEditPage from "../presentation/features/part/pages/PartEditPage.vue";
 
 const routes = [
     {

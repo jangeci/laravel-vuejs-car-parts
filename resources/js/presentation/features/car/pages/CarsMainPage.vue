@@ -1,67 +1,15 @@
-<script setup>
-import {computed, inject, onMounted, ref} from 'vue';
-import axios from 'axios';
+<script setup lang="ts">
+    import CarComposable from "@/presentation/features/car/composables/CarComposable";
 
-const toast = inject("toast");
-
-const cars = ref([]);
-const searchQuery = ref('');
-const paginationLinks = ref([]);
-const addCarError = ref('');
-const isRegistered = ref(false);
-
-const fetchCars = async (url = '/cars') => {
-    try {
-        const response = await axios.get(url, {
-            params: {
-                search: searchQuery.value,
-            }
-        });
-        cars.value = response.data.data.data;
-        paginationLinks.value = response.data.data.links;
-    } catch (error) {
-        console.error("Error fetching cars:", error);
-    }
-};
-
-onMounted(fetchCars);
-
-const addCar = async (event) => {
-    event.preventDefault();
-
-    const formData = new FormData(event.target);
-    const name = formData.get("name");
-    const registration_number = formData.get("registration_number");
-    const is_registered = isRegistered.value ? 1 : 0;
-
-    const errors = {};
-    if (!name) {
-        errors.name = "Car name is required.";
-    }
-    if (!registration_number && is_registered === 1) {
-        errors.registration_number = "Registration number is required.";
-    }
-
-    if (Object.keys(errors).length > 0) {
-        addCarError.value = errors;
-        return;
-    }
-
-    try {
-        await axios.post('/car-create', {name, registration_number, is_registered});
-        event.target.reset();
-        addCarError.value = '';
-        toast("Car added successfully!", "success");
-        fetchCars();
-    } catch (error) {
-        if (error.response && error.response.status === 422) {
-            addCarError.value = error.response.data.errors;
-        } else {
-            addCarError.value = error.message;
-        }
-        console.error("Error adding car:", error);
-    }
-};
+    const {
+        data,
+        searchQuery,
+        isLoading,
+        form,
+        addCarError,
+        addCar,
+        fetchCars,
+    } = CarComposable()
 </script>
 
 <template>
@@ -71,7 +19,7 @@ const addCar = async (event) => {
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">
-                        <form class="d-flex w-100" @submit.prevent="fetchCars('/cars')">
+                        <form class="d-flex w-100" @submit.prevent="fetchCars()">
                             <input
                                 class="form-control flex-grow-1"
                                 v-model="searchQuery"
@@ -88,20 +36,13 @@ const addCar = async (event) => {
                         <div class="container">
                             <div class="row">
                                 <cars-list
-                                    :cars="cars"
+                                    :cars="data?.data"
                                     :fetchCars="fetchCars"
                                 ></cars-list>
-                                <nav v-if="paginationLinks && paginationLinks.length > 3">
-                                    <ul class="pagination">
-                                        <li v-for="(link, index) in paginationLinks" :key="index" class="page-item"
-                                            :class="{ 'active': link.active, 'disabled': !link.url }">
-                                            <a v-if="link.url" class="page-link" href="#" @click.prevent="fetchCars(link.url)">
-                                                <span v-html="link.label"></span>
-                                            </a>
-                                            <span v-else class="page-link" v-html="link.label"></span>
-                                        </li>
-                                    </ul>
-                                </nav>
+                                <pagination
+                                    :data="data"
+                                    :fetch-data="fetchCars"
+                                ></pagination>
                             </div>
                         </div>
                     </div>
@@ -114,7 +55,7 @@ const addCar = async (event) => {
                         Add new car
                     </div>
                     <div class="card-body">
-                        <form @submit="addCar">
+                        <form @submit.prevent="addCar">
                             <input type="hidden" name="is_registered" value="0">
 
                             <div class="form-group pb-3">
@@ -124,7 +65,7 @@ const addCar = async (event) => {
                                 <input
                                     id="name"
                                     class="form-control"
-                                    name="name"
+                                    v-model="form.name"
                                     type="text"
                                     :class="{'is-invalid': addCarError.name}"
                                 >
@@ -137,11 +78,10 @@ const addCar = async (event) => {
                             <div class="form-group pb-3 d-flex">
                                 <input
                                     class="form-check-input me-2"
-                                    name="is_registered"
                                     type="checkbox"
                                     id="is_registered"
-                                    v-model="isRegistered"
-                                    :checked="isRegistered"
+                                    v-model="form.isRegistered"
+                                    :checked="form.isRegistered"
                                 >
                                 <label class="form-label" for="is_registered">
                                     Is registered
@@ -155,15 +95,15 @@ const addCar = async (event) => {
                                 <input
                                     id="registration_number"
                                     class="form-control"
-                                    name="registration_number"
+                                    v-model="form.registrationNumber"
                                     type="text"
-                                    :class="{'is-invalid': addCarError.registration_number}"
+                                    :class="{'is-invalid': addCarError.registrationNumber}"
                                 >
+                                <div v-if="addCarError.registrationNumber" class="invalid-feedback">
+                                    {{ addCarError.registrationNumber }}
+                                </div>
                             </div>
 
-                            <div v-if="addCarError.registration_number" class="form-group pb-3 invalid-feedback">
-                                {{ addCarError.registration_number }}
-                            </div>
 
                             <button type="submit" class="btn btn-primary">Add Car</button>
                         </form>
